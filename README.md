@@ -68,16 +68,14 @@ The notebook [`2019-24-nypd-hate-crimes-analysis.ipynb`](notebooks/2019-24-nypd-
 - Creates plotly graph visualizations of:
   - Monthly incident counts with overlaid bar charts showing total vs violent incidents 
   - Quarterly percentage trends of violent incidents on the opposite axis
-  - Iteratively creates and displays a multiple comparative graphs using the values in the selected category column 
-
-- Generates plots at three levels of aggregation:
-  - Full dataset by NYPD Offense Category 
-  - Full dataset by specific Bias Motive Description
-  - Individual category deep-dives (e.g., "Sexual Orientation" or "Anti-Jewish")
+  - Iteratively creates and displays comparative graphs at three levels of aggregation:
+    - Full dataset by NYPD Offense Category 
+    - Full dataset by specific Bias Motive Description
+    - Individual category deep-dives (e.g., "Sexual Orientation" or "Anti-Jewish")
 
 ### Mapping Hate Crime Data by Precinct
 
-For this section we move to a second notebook [`precinct_hate_crime_map,ipynb`](notebooks/precinct_hate_crime_map.ipynb) to map our data across the NYPD precinct does in our dataset using the [datawrapper](https://datawrapper.readthedocs.io/en/latest/) library. 
+For this section we move to a second notebook [`precinct_hate_crime_map.ipynb`](notebooks/precinct_hate_crime_map.ipynb) to map our data across the NYPD precinct does in our dataset using the [datawrapper](https://datawrapper.readthedocs.io/en/latest/) library. 
 
 - Creates interactive choropleth maps showing hate crime distribution across NYPD precincts
 - Includes detailed tooltips showing breakdowns by category, violence rates, and arrest rates
