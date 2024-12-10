@@ -1,14 +1,14 @@
-# Analysis of NYPD Hate Crimes Dataset — 2019-01-01 to 2024-06-25 
+# Analysis of NYPD Hate Crimes Dataset — 2019-01-01 to 2024-09-30
 
 This repository contains data and code analyzing NYPD Hate Crime data. 
 
 ## Data
 
-This analysis uses the NYPD Hate Crimes quarterly dataset. 
+This analysis uses the NYPD Hate Crimes public dataset (produced by requirement under [New York City Administrative Code § 14-161](https://codelibrary.amlegal.com/codes/newyorkcity/latest/NYCadmin/0-0-0-25275). 
 
 - Name of source:
-  - `NYPD_Hate_Crimes_20240929.csv`: Raw data
-  - Live and updated at [`NYC OpenData`](https://data.cityofnewyork.us/Public-Safety/NYPD-Hate-Crimes/bqiq-cu78/about_data) 
+  - `NYPD_Hate_Crimes_20241206.csv`: Raw data
+  - Live and updated at [`NYC OpenData`](https://data.cityofnewyork.us/Public-Safety/NYPD-Hate-Crimes/bqiq-cu78/about_data) on a quarterly basis
 
 The sheet contains the following columns (as defined by the OpenData dataset info):
 
@@ -27,35 +27,64 @@ The sheet contains the following columns (as defined by the OpenData dataset inf
 - `Arrest Date` — Date arrest was made (if arrest happened)
 - `Arrest Id` — Identifier for arrest (if made)
 
+We'll also be using a key for further contextualizing NYPD Hate Crime data in the context of UCR/NIBRS Federal reporting and NY State DCJS reporting. 
+
+- Name of source:
+  - `offense_categorization_key.xlsx`
+ 
+This sheet contains the following columns (further explained in the 'Data Dictionary' tab of the file): 
+
+- `Offense` — Offense sourced from aggregate 'PD Code Descriptions' from NYPD Hate Crimes dataset
+- `Legal_Level` — Law Code Category Description keypairs sourced from NYPD Hate Crimes dataset
+- `NYS_Specified` — "Specified Offense" status defined in NYS Penal Code § 485.05(3) Hate Crimes
+- `NIBRS_Code` — Matching NIBRS Offense Code(s) from the federal NIBRS User Manual
+- `NIBRS_Group` — NIBRS Offense group classification. Group A offenses are considered more serious and are reported federally even without an arrest. Group B offenses are only reported federally if there has been an arrest.
+- `Crime_Against` — UCR/NIBRS Crime Classification by motivation: crimes against persons, crimes against society, crimes against property. Defined in UCR portal methodology.
+- `DCJS_Hate_Crimes` — Whether the offense is listed in the DCJS 'Hate Crime Penal Law Reference Table'
+- `Violent` — Whether the offense code indicates direct physical harm in the complaint
+
+
 ## Methodology
 
-The notebook [`2019-24-nypd-hate-crimes-analysis.ipynb`](notebooks/2019-24-nypd-hate-crimes-analysis.ipynb) performs the following analyses:
+The notebook [`2019-24-nypd-hate-crimes-analysis.ipynb`](notebooks/2019-24-nypd-hate-crimes-analysis.ipynb) performs the following analyses on NYPD hate crime data:
 
-##### Part 1: Comparing Hate Crimes by Bias Category and Criminal Code Category
+### Comparing Hate Crimes: Simple Counts
+- Examines count of incidents per:
+  - NIBRS Crime category (persons/property/society)
+  - Borough
+  - Precinct
+  - Offense category
+  - Bias motive
 
-- Prepare the data and add a column grouping PD Codes into categories
-- Examine the count of incidents by:
-  - Code Category
-  - Patrol Borough
-  - Bias (category and specific)
-- Group anti-LGBTQ bias motives
-- Filter incidents with bias motives targeting:
-  - religious groups,
-  - ant-LGBTQ bias motives, and
-  - Race/Color and Ethnicity/Ancestry
-- Plot incidents against those bias groups against each other over time
+### Comparing Hate Crimes: Bias Category Tables 
+- Analyzes three groupings:
+  - Full list of Bias Motive Description categories from NYPD
+  - Aggregated Offense Categories grouping bias motives from NYPD 
+  - Custom aggregate comparison of Anti-LGBTQ, Anti-Religious and Anti-Race/Ethnicity bias motives
+- Creates dataframes with calculated statistics about hate crime data per grouping
 
-##### Part 2: Violent Hate Crimes 
+### Comparing Hate Crimes: Plotting Hate Crime Data Over Time by Category 
 
-- Analyze and plot frequency of VIOLENT code category hate crimes by bias motive
-- Plot the percentage of total reports per bias category that were violent by month
-- Plot reported hate crimes by code category as pie charts
+- Creates plotly graph visualizations of:
+  - Monthly incident counts with overlaid bar charts showing total vs violent incidents 
+  - Quarterly percentage trends of violent incidents on the opposite axis
+  - Iteratively creates and displays a multiple comparative graphs using the values in the selected category column 
 
+- Generates plots at three levels of aggregation:
+  - Full dataset by NYPD Offense Category 
+  - Full dataset by specific Bias Motive Description
+  - Individual category deep-dives (e.g., "Sexual Orientation" or "Anti-Jewish")
 
-##### Part 3: Analyzing Arrest Data
+### Mapping Hate Crime Data by Precinct
 
-- Filter reported hate crimes by those Arrest ID and Arrest Date to identify those incidents that resulted in an arrest
-- Create dataframe and csv of arrests for reported hate crimes with an anti-LGBTQ bias motive. 
+For this section we move to a second notebook [`precinct_hate_crime_map,ipynb`](notebooks/precinct_hate_crime_map.ipynb) to map our data across the NYPD precinct does in our dataset using the [datawrapper](https://datawrapper.readthedocs.io/en/latest/) library. 
+
+- Creates interactive choropleth maps showing hate crime distribution across NYPD precincts
+- Includes detailed tooltips showing breakdowns by category, violence rates, and arrest rates
+
+### Reporting Resource: Filtered Arrest List
+- Creates filtered datasets of reported hate crimes with arrests
+- Outputs arrest data that can be used to request NYPD Arrest Reports or identify specific cases in ECourts. 
 
 
 ## Outputs
@@ -65,14 +94,17 @@ The notebooks output these spreadsheets:
 - [`output/hate_crimes_w_codecats.csv`](output/hate_crimes_w_codecats.csv) which contains the raw data with the added column futher categorizing PD Code Descriptions from 'Part 1.'
 - [`output/anti_lgbt_hate_crime_arrests.csv`](output/anti_lgbt_hate_crime_arrests.csv) which contains the arrest data from 'Part 3.' 
 
-
+It also generates an interactive datawrapper map on the user's datawrapper account. 
 
 ## Running the analysis yourself
 
 You can run the analysis yourself. To do so, you'll need the following installed on your computer:
 
 - Python 3
-- The Python libraries specified in [`requirements.txt`](requirements.txt)
+- pandas for data analysis
+- plotly for visualizations
+- datawrapper for mapping (requires [API token](https://developer.datawrapper.de/docs/getting-started))
+- The rest of the Python libraries specified in [`requirements.txt`](requirements.txt)
 
 ## Licensing
 

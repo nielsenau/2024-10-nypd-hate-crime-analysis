@@ -1,3 +1,6 @@
-jupyter
+numpy
 pandas
-matplotlib
+openpyxl
+datawrapper
+plotly
+ipython
